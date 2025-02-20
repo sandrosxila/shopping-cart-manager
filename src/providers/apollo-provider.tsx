@@ -1,11 +1,12 @@
 "use client";
 
-import { HttpLink } from "@apollo/client";
+import { HttpLink, ApolloLink, concat } from "@apollo/client";
 import {
   ApolloNextAppProvider,
   ApolloClient,
   InMemoryCache,
 } from "@apollo/experimental-nextjs-app-support";
+import Cookies from 'js-cookie';
 
 // have a function to create a client for you
 function makeClient() {
@@ -21,11 +22,23 @@ function makeClient() {
     // const { data } = useSuspenseQuery(MY_QUERY, { context: { fetchOptions: { cache: "force-cache" }}});
   });
 
+  const authMiddleware = new ApolloLink((operation, forward) => {
+    const token = Cookies.get('authToken');
+
+    operation.setContext({
+      headers: {
+        Authorization: token ? `Bearer ${token}` : "",
+      },
+    });
+
+    return forward(operation);
+  });
+
   // use the `ApolloClient` from "@apollo/experimental-nextjs-app-support"
   return new ApolloClient({
     // use the `InMemoryCache` from "@apollo/experimental-nextjs-app-support"
     cache: new InMemoryCache(),
-    link: httpLink,
+    link: concat(authMiddleware, httpLink),
   });
 }
 

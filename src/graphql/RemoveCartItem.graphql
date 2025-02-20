@@ -1,0 +1,6 @@
+mutation RemoveCartItem($input: RemoveItemArgs!) {
+  removeItem(input: $input) {
+    hash
+    _id
+  }
+}

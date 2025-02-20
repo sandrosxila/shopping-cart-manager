@@ -1,11 +1,11 @@
 import { CartActions } from "@/components/cart-actions";
 import { query } from "@/apollo-client";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
-import {GetProductsDocument, Product} from '@/generated/graphql';
+import {GetCartItemsDocument, GetProductsDocument, Product} from '@/generated/graphql';
 
-export default async function Home() {
+export default async function Cart() {
   const { data } = await query({ 
-    query: GetProductsDocument ,
+    query: GetCartItemsDocument ,
     context: {
       fetchOptions: {
         next: { revalidate: 5 },
@@ -13,30 +13,30 @@ export default async function Home() {
     },
   });
 
-  const products = data.getProducts?.products || []; 
+  const items = data.getCart?.items || [];
   
   return (
     <div className="container flex justify-center">
       <div className="grid grid-cols-3 gap-4">
         {
-          products.map(product => (
-            <Card key={product._id}>
+          items.map(item => (
+            <Card key={item._id}>
               <CardHeader>
-                <CardTitle>{product.title}</CardTitle>
-                <CardDescription>${product.cost}</CardDescription>
+                <CardTitle>{item.product.title}</CardTitle>
+                <CardDescription>${item.product.cost}</CardDescription>
               </CardHeader>
               <CardContent>
                 <div className="space-y-1">
                   <p className="text-sm font-medium leading-none">
-                    {product.availableQuantity}
+                    {item.quantity}
                   </p>
                   <p className="text-sm text-muted-foreground">
-                    {product.isArchived ? "Archived" : "Is not Archived"}
+                    {item.product.availableQuantity}
                   </p>
                 </div>
               </CardContent>
               <CardFooter className="flex justify-between">
-                <CartActions productId={product._id}/>
+                <CartActions productId={item._id}/>
               </CardFooter>
             </Card>
           ))

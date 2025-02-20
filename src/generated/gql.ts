@@ -19,6 +19,7 @@ type Documents = {
     "subscription CartItemUpdateSubscription {\n  cartItemUpdate {\n    event\n    payload {\n      _id\n      product {\n        title\n        availableQuantity\n      }\n      quantity\n    }\n  }\n}": typeof types.CartItemUpdateSubscriptionDocument,
     "query GetCartItems {\n  getCart {\n    _id\n    hash\n    items {\n      _id\n      product {\n        title\n        cost\n        availableQuantity\n      }\n      quantity\n      addedAt\n      cartId\n    }\n  }\n}": typeof types.GetCartItemsDocument,
     "query GetProducts {\n  getProducts {\n    products {\n      _id\n      title\n      cost\n      availableQuantity\n      isArchived\n    }\n    total\n  }\n}": typeof types.GetProductsDocument,
+    "mutation RemoveCartItem($input: RemoveItemArgs!) {\n  removeItem(input: $input) {\n    hash\n    _id\n  }\n}": typeof types.RemoveCartItemDocument,
 };
 const documents: Documents = {
     "mutation AddItemToCart($input: AddItemArgs!) {\n  addItem(input: $input) {\n    _id\n    hash\n    items {\n      product {\n        title\n        cost\n      }\n      quantity\n    }\n  }\n}": types.AddItemToCartDocument,
@@ -26,6 +27,7 @@ const documents: Documents = {
     "subscription CartItemUpdateSubscription {\n  cartItemUpdate {\n    event\n    payload {\n      _id\n      product {\n        title\n        availableQuantity\n      }\n      quantity\n    }\n  }\n}": types.CartItemUpdateSubscriptionDocument,
     "query GetCartItems {\n  getCart {\n    _id\n    hash\n    items {\n      _id\n      product {\n        title\n        cost\n        availableQuantity\n      }\n      quantity\n      addedAt\n      cartId\n    }\n  }\n}": types.GetCartItemsDocument,
     "query GetProducts {\n  getProducts {\n    products {\n      _id\n      title\n      cost\n      availableQuantity\n      isArchived\n    }\n    total\n  }\n}": types.GetProductsDocument,
+    "mutation RemoveCartItem($input: RemoveItemArgs!) {\n  removeItem(input: $input) {\n    hash\n    _id\n  }\n}": types.RemoveCartItemDocument,
 };
 
 /**
@@ -62,6 +64,10 @@ export function graphql(source: "query GetCartItems {\n  getCart {\n    _id\n   
  * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */
 export function graphql(source: "query GetProducts {\n  getProducts {\n    products {\n      _id\n      title\n      cost\n      availableQuantity\n      isArchived\n    }\n    total\n  }\n}"): (typeof documents)["query GetProducts {\n  getProducts {\n    products {\n      _id\n      title\n      cost\n      availableQuantity\n      isArchived\n    }\n    total\n  }\n}"];
+/**
+ * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
+ */
+export function graphql(source: "mutation RemoveCartItem($input: RemoveItemArgs!) {\n  removeItem(input: $input) {\n    hash\n    _id\n  }\n}"): (typeof documents)["mutation RemoveCartItem($input: RemoveItemArgs!) {\n  removeItem(input: $input) {\n    hash\n    _id\n  }\n}"];
 
 export function graphql(source: string) {
   return (documents as any)[source] ?? {};
