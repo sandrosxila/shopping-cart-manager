@@ -1,0 +1,13 @@
+mutation AddItemToCart($input: AddItemArgs!) {
+  addItem(input: $input) {
+    _id
+    hash
+    items {
+      product {
+        title
+        cost
+      }
+      quantity
+    }
+  }
+}

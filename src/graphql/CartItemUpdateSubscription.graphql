@@ -1,0 +1,13 @@
+subscription CartItemUpdateSubscription {
+  cartItemUpdate {
+    event
+    payload {
+      _id
+      product {
+        title
+        availableQuantity
+      }
+      quantity
+    }
+  }
+}

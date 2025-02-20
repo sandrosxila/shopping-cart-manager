@@ -1,0 +1,7 @@
+overwrite: true
+schema: "https://take-home-be.onrender.com/api"
+documents: "src/graphql/**/*.graphql"
+generates:
+  src/generated/:
+    preset: "client"
+    plugins: []

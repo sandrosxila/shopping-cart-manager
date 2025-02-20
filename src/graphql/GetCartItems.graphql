@@ -1,0 +1,17 @@
+query GetCartItems {
+  getCart {
+    _id
+    hash
+    items {
+      _id
+      product {
+        title
+        cost
+        availableQuantity
+      }
+      quantity
+      addedAt
+      cartId
+    }
+  }
+}

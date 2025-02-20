@@ -1,11 +1,10 @@
-import Image from "next/image";
 import styles from "./page.module.css";
-import { getClient, query } from "@/apollo-client";
-import { GET_PRODUCTS } from "@/queries/products";
+import { query } from "@/apollo-client";
+import {GetProductsDocument, Product} from '@/generated/graphql';
 
 export default async function Home() {
-  const { data } = await query({ 
-    query: GET_PRODUCTS ,
+  const { data } = await query<Product>({ 
+    query: GetProductsDocument ,
     context: {
       fetchOptions: {
         next: { revalidate: 5 },

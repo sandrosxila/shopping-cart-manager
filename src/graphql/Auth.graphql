@@ -1,0 +1,8 @@
+mutation Auth {
+  register {
+    _id
+    token
+    cartId
+    isActive
+  }
+}
