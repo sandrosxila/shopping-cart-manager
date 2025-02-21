@@ -1,12 +1,15 @@
 "use client";
 
-import { HttpLink, ApolloLink, concat } from "@apollo/client";
+import { HttpLink, ApolloLink, concat, split } from "@apollo/client";
 import {
   ApolloNextAppProvider,
   ApolloClient,
   InMemoryCache,
 } from "@apollo/experimental-nextjs-app-support";
 import Cookies from 'js-cookie';
+import { GraphQLWsLink } from '@apollo/client/link/subscriptions';
+import { createClient } from 'graphql-ws';
+import { getMainDefinition } from "@apollo/client/utilities";
 
 // have a function to create a client for you
 function makeClient() {
@@ -21,6 +24,34 @@ function makeClient() {
     // to an Apollo Client data fetching hook, e.g.:
     // const { data } = useSuspenseQuery(MY_QUERY, { context: { fetchOptions: { cache: "force-cache" }}});
   });
+  
+  const wsLink = new GraphQLWsLink(createClient({
+    url: 'wss://take-home-be.onrender.com/api',
+    connectionParams: () => {
+      const token = Cookies.get('authToken');
+
+      return {
+        authToken: token
+      }
+    }
+  }));
+  
+  // The split function takes three parameters:
+  //
+  // * A function that's called for each operation to execute
+  // * The Link to use for an operation if the function returns a "truthy" value
+  // * The Link to use for an operation if the function returns a "falsy" value
+  const splitLink = split(
+    ({ query }) => {
+      const definition = getMainDefinition(query);
+      return (
+        definition.kind === 'OperationDefinition' &&
+        definition.operation === 'subscription'
+      );
+    },
+    wsLink,
+    httpLink,
+  );
 
   const authMiddleware = new ApolloLink((operation, forward) => {
     const token = Cookies.get('authToken');
@@ -38,7 +69,7 @@ function makeClient() {
   return new ApolloClient({
     // use the `InMemoryCache` from "@apollo/experimental-nextjs-app-support"
     cache: new InMemoryCache(),
-    link: concat(authMiddleware, httpLink),
+    link: concat(authMiddleware, splitLink),
   });
 }
 

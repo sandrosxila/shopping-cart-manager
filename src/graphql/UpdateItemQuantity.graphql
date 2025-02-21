@@ -1,0 +1,10 @@
+mutation UpdateItemQuantity($input: UpdateItemQuantityArgs!) {
+  updateItemQuantity(input: $input) {
+    _id
+    hash
+    items {
+      quantity
+      _id
+    }
+  }
+}
