@@ -7,9 +7,7 @@ export default async function Home() {
     <div className="container flex grow justify-center w-full self-center">
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
         <PreloadQuery query={GetProductsDocument}>
-          {(queryRef) => (
-            <Products queryRef={queryRef} />
-          )}
+          <Products />
         </PreloadQuery>
       </div>
     </div>

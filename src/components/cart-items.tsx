@@ -3,17 +3,11 @@
 import React, { useState } from "react";
 import {
   CartItemUpdateSubscriptionDocument,
-  Exact,
-  GetCartItemsQuery,
   CartItemEvent,
+  GetCartItemsDocument,
 } from "@/generated/graphql";
 import { CartItemCard } from "@/components/cart-item-card";
-import { TransportedQueryRef } from "@apollo/experimental-nextjs-app-support";
-import {
-  useQueryRefHandlers,
-  useReadQuery,
-  useSubscription,
-} from "@apollo/client";
+import { useSubscription, useSuspenseQuery } from "@apollo/client";
 import { useDebouncedCallback } from "use-debounce";
 import toast from "react-hot-toast";
 import { Dialog } from "@radix-ui/react-dialog";
@@ -26,21 +20,8 @@ import {
 } from "./ui/dialog";
 import { Button } from "./ui/button";
 
-type CartItemsProps = {
-  queryRef: TransportedQueryRef<
-    NoInfer<GetCartItemsQuery>,
-    NoInfer<
-      Exact<{
-        [key: string]: never;
-      }>
-    >
-  >;
-};
-
-export const CartItems = ({ queryRef }: CartItemsProps) => {
-  const { refetch } = useQueryRefHandlers(queryRef);
-  const { data } = useReadQuery(queryRef);
-
+export const CartItems = () => {
+  const { data, refetch } = useSuspenseQuery(GetCartItemsDocument);
   const [isModalOpen, setIsModalOpen] = useState(false);
 
   const [itemsChanged, setItemsChanged] = useState<
@@ -54,7 +35,7 @@ export const CartItems = ({ queryRef }: CartItemsProps) => {
 
   useSubscription(CartItemUpdateSubscriptionDocument, {
     onData({ data }) {
-      console.log(data)
+      console.log(data);
       if (data.data?.cartItemUpdate) {
         const { event, payload } = data.data?.cartItemUpdate;
         const { title, availableQuantity } = payload.product;
@@ -80,7 +61,7 @@ export const CartItems = ({ queryRef }: CartItemsProps) => {
 
         debouncedOpen();
       }
-    }
+    },
   });
 
   const onOkClick = () => {

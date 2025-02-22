@@ -2,35 +2,16 @@
 
 import React from "react";
 import { ProductCard } from "@/components/product-card";
+import {CartItemUpdateSubscriptionDocument, CartItemEvent, GetProductsDocument} from '@/generated/graphql';
 import {
-  Exact,
-  GetProductsQuery,
-  CartItemUpdateSubscriptionDocument,
-  CartItemEvent,
-} from "@/generated/graphql";
-import { TransportedQueryRef } from "@apollo/experimental-nextjs-app-support";
-import {
-  useReadQuery,
   useSubscription,
-  useQueryRefHandlers,
+  useSuspenseQuery,
 } from "@apollo/client";
 import toast from "react-hot-toast";
 import { useDebouncedCallback } from "use-debounce";
 
-type ProductsProps = {
-  queryRef: TransportedQueryRef<
-    NoInfer<GetProductsQuery>,
-    NoInfer<
-      Exact<{
-        [key: string]: never;
-      }>
-    >
-  >;
-};
-
-export const Products = ({ queryRef }: ProductsProps) => {
-  const { refetch } = useQueryRefHandlers(queryRef);
-  const { data } = useReadQuery(queryRef);
+export const Products = () => {
+  const { data, refetch } = useSuspenseQuery(GetProductsDocument);
 
   const products = data.getProducts.products ?? [];
 
