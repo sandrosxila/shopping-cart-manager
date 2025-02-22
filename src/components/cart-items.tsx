@@ -54,6 +54,7 @@ export const CartItems = ({ queryRef }: CartItemsProps) => {
 
   useSubscription(CartItemUpdateSubscriptionDocument, {
     onData({ data }) {
+      console.log(data)
       if (data.data?.cartItemUpdate) {
         const { event, payload } = data.data?.cartItemUpdate;
         const { title, availableQuantity } = payload.product;
@@ -79,14 +80,14 @@ export const CartItems = ({ queryRef }: CartItemsProps) => {
 
         debouncedOpen();
       }
-    },
+    }
   });
 
   const onOkClick = () => {
-    refetch();
     setIsModalOpen(false);
-    setItemsChanged([]);
-    setItemsRemoved([]);
+    setItemsChanged(() => []);
+    setItemsRemoved(() => []);
+    refetch();
   };
 
   return (
