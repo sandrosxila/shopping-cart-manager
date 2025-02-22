@@ -1,27 +1,14 @@
-import { query } from "@/apollo-client";
-import {GetProductsDocument} from '@/generated/graphql';
-import { ProductCard } from "@/components/product-card";
+import { PreloadQuery, query } from "@/apollo-client";
+import { GetProductsDocument } from "@/generated/graphql";
+import { Products } from "@/components/products";
 
 export default async function Home() {
-  const { data } = await query({ 
-    query: GetProductsDocument ,
-    context: {
-      fetchOptions: {
-        next: { revalidate: 5 },
-      },
-    },
-  });
-
-  const products = data.getProducts?.products || []; 
-  
   return (
     <div className="container flex grow justify-center w-full self-center">
       <div className="grid grid-cols-3 gap-4">
-        {
-          products.map(product => (
-            <ProductCard key={product._id} product={product} />
-          ))
-        }
+        <PreloadQuery query={GetProductsDocument}>
+          {(queryRef) => <Products queryRef={queryRef} />}
+        </PreloadQuery>
       </div>
     </div>
   );

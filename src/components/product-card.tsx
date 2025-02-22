@@ -1,6 +1,6 @@
 "use client";
 
-import { Product, AddItemToCartDocument } from "@/generated/graphql";
+import { Product, AddItemToCartDocument, GetProductsDocument } from "@/generated/graphql";
 import React, { useState } from "react";
 import {
   Card,
@@ -41,7 +41,8 @@ export const ProductCard = ({ product }: ProductCardProps) => {
       });
 
       toast.success("The product added successfully to the cart!");
-    } catch (error) {
+    } catch (error: any) {
+      console.log({...error});
       toastGraphQLZodError(error);
     }
   };

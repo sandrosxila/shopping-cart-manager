@@ -19,7 +19,10 @@ import { Button } from "./ui/button";
 import { useMutation } from "@apollo/client";
 import { Input } from "./ui/input";
 import { useState } from "react";
-import { cartRemoveItemSchema, cartUpdateItemQuantitySchema } from "@/lib/schema";
+import {
+  cartRemoveItemSchema,
+  cartUpdateItemQuantitySchema,
+} from "@/lib/schema";
 import { toastZodErrorIssues, toastGraphQLZodError } from "@/helpers/error";
 import toast from "react-hot-toast";
 
@@ -42,6 +45,8 @@ export const CartItemCard = ({ item }: CartItemCardProps) => {
       return;
     }
 
+    const toastId = toast.loading(`Removing the cart item: ${item.product.title}`);
+
     try {
       await removeCartItem({
         variables: { input },
@@ -49,11 +54,13 @@ export const CartItemCard = ({ item }: CartItemCardProps) => {
       });
     } catch (error) {
       toastGraphQLZodError(error);
+    } finally {
+      toast.dismiss(toastId);
     }
   };
 
   const onQuantityUpdateClick = async () => {
-    const input = { cartItemId: item._id, quantity } ;
+    const input = { cartItemId: item._id, quantity };
 
     const validatedInput = cartUpdateItemQuantitySchema.safeParse(input);
 
@@ -99,7 +106,7 @@ export const CartItemCard = ({ item }: CartItemCardProps) => {
             />
           </div>
           <p className="text-sm text-muted-foreground">
-            {item.product.availableQuantity}
+            Available: {item.product.availableQuantity}
           </p>
         </div>
       </CardContent>

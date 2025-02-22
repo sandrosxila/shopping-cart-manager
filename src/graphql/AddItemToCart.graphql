@@ -3,10 +3,6 @@ mutation AddItemToCart($input: AddItemArgs!) {
     _id
     hash
     items {
-      product {
-        title
-        cost
-      }
       quantity
     }
   }
