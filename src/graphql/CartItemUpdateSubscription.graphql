@@ -2,8 +2,12 @@ subscription CartItemUpdateSubscription {
   cartItemUpdate {
     event
     payload {
-      _id
       quantity
+      _id
+      product {
+        title
+        availableQuantity
+      }
     }
   }
 }

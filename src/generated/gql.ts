@@ -16,7 +16,7 @@ import { TypedDocumentNode as DocumentNode } from '@graphql-typed-document-node/
 type Documents = {
     "mutation AddItemToCart($input: AddItemArgs!) {\n  addItem(input: $input) {\n    _id\n    hash\n    items {\n      product {\n        title\n        cost\n      }\n      quantity\n    }\n  }\n}": typeof types.AddItemToCartDocument,
     "mutation Auth {\n  register {\n    _id\n    token\n    cartId\n    isActive\n  }\n}": typeof types.AuthDocument,
-    "subscription CartItemUpdateSubscription {\n  cartItemUpdate {\n    event\n    payload {\n      _id\n      quantity\n    }\n  }\n}": typeof types.CartItemUpdateSubscriptionDocument,
+    "subscription CartItemUpdateSubscription {\n  cartItemUpdate {\n    event\n    payload {\n      quantity\n      _id\n      product {\n        title\n        availableQuantity\n      }\n    }\n  }\n}": typeof types.CartItemUpdateSubscriptionDocument,
     "query GetCartItems {\n  getCart {\n    _id\n    hash\n    items {\n      _id\n      product {\n        title\n        cost\n        availableQuantity\n      }\n      quantity\n      addedAt\n      cartId\n    }\n  }\n}": typeof types.GetCartItemsDocument,
     "query GetProducts {\n  getProducts {\n    products {\n      _id\n      title\n      cost\n      availableQuantity\n      isArchived\n    }\n    total\n  }\n}": typeof types.GetProductsDocument,
     "mutation RemoveCartItem($input: RemoveItemArgs!) {\n  removeItem(input: $input) {\n    hash\n    _id\n  }\n}": typeof types.RemoveCartItemDocument,
@@ -25,7 +25,7 @@ type Documents = {
 const documents: Documents = {
     "mutation AddItemToCart($input: AddItemArgs!) {\n  addItem(input: $input) {\n    _id\n    hash\n    items {\n      product {\n        title\n        cost\n      }\n      quantity\n    }\n  }\n}": types.AddItemToCartDocument,
     "mutation Auth {\n  register {\n    _id\n    token\n    cartId\n    isActive\n  }\n}": types.AuthDocument,
-    "subscription CartItemUpdateSubscription {\n  cartItemUpdate {\n    event\n    payload {\n      _id\n      quantity\n    }\n  }\n}": types.CartItemUpdateSubscriptionDocument,
+    "subscription CartItemUpdateSubscription {\n  cartItemUpdate {\n    event\n    payload {\n      quantity\n      _id\n      product {\n        title\n        availableQuantity\n      }\n    }\n  }\n}": types.CartItemUpdateSubscriptionDocument,
     "query GetCartItems {\n  getCart {\n    _id\n    hash\n    items {\n      _id\n      product {\n        title\n        cost\n        availableQuantity\n      }\n      quantity\n      addedAt\n      cartId\n    }\n  }\n}": types.GetCartItemsDocument,
     "query GetProducts {\n  getProducts {\n    products {\n      _id\n      title\n      cost\n      availableQuantity\n      isArchived\n    }\n    total\n  }\n}": types.GetProductsDocument,
     "mutation RemoveCartItem($input: RemoveItemArgs!) {\n  removeItem(input: $input) {\n    hash\n    _id\n  }\n}": types.RemoveCartItemDocument,
@@ -57,7 +57,7 @@ export function graphql(source: "mutation Auth {\n  register {\n    _id\n    tok
 /**
  * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */
-export function graphql(source: "subscription CartItemUpdateSubscription {\n  cartItemUpdate {\n    event\n    payload {\n      _id\n      quantity\n    }\n  }\n}"): (typeof documents)["subscription CartItemUpdateSubscription {\n  cartItemUpdate {\n    event\n    payload {\n      _id\n      quantity\n    }\n  }\n}"];
+export function graphql(source: "subscription CartItemUpdateSubscription {\n  cartItemUpdate {\n    event\n    payload {\n      quantity\n      _id\n      product {\n        title\n        availableQuantity\n      }\n    }\n  }\n}"): (typeof documents)["subscription CartItemUpdateSubscription {\n  cartItemUpdate {\n    event\n    payload {\n      quantity\n      _id\n      product {\n        title\n        availableQuantity\n      }\n    }\n  }\n}"];
 /**
  * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */

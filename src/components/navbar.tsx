@@ -9,7 +9,7 @@ export const Navbar = () => {
           <div className="mr-4 flex">
             <Link className="mr-4 flex items-center gap-2 lg:mr-6" href="/">
               <span className="p-4 font-bold lg:inline-block">
-                Return Home
+                Take Home
               </span>
             </Link>
             <nav className="flex items-center gap-4 text-sm xl:gap-6">

@@ -36,7 +36,7 @@ function makeClient() {
     },
     disablePong: false,
     retryAttempts: 3,
-    keepAlive: 5000,
+    keepAlive: 60 * 1000,
   }));
   
   // The split function takes three parameters:
