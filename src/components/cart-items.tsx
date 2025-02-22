@@ -101,8 +101,8 @@ export const CartItems = ({ queryRef }: CartItemsProps) => {
                   <li>
                     Item(s) with changed quantities:
                     <ul className="list-disc list-inside pl-8 font-normal text-base pt-2">
-                      {itemsChanged.map((item) => (
-                        <li>
+                      {itemsChanged.map((item, id) => (
+                        <li key={id}>
                           {item.title} - {item.availableQuantity}
                         </li>
                       ))}
@@ -113,8 +113,8 @@ export const CartItems = ({ queryRef }: CartItemsProps) => {
                   <li>
                     Item(s) removed due to being out of stock
                     <ul className="list-disc list-inside pl-8 font-normal text-base pt-2">
-                      {itemsRemoved.map((item) => (
-                        <li>{item}</li>
+                      {itemsRemoved.map((item, id) => (
+                        <li key={id}>{item}</li>
                       ))}
                     </ul>
                   </li>

@@ -1,4 +1,4 @@
-import { PreloadQuery, query } from "@/apollo-client";
+import { PreloadQuery } from "@/apollo-client";
 import { CartItems } from "@/components/cart-items";
 import { GetCartItemsDocument } from "@/generated/graphql";
 import { Suspense } from "react";

@@ -1,4 +1,4 @@
-import { PreloadQuery, query } from "@/apollo-client";
+import { PreloadQuery } from "@/apollo-client";
 import { GetProductsDocument } from "@/generated/graphql";
 import { Products } from "@/components/products";
 import { Suspense } from "react";

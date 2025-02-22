@@ -8,7 +8,7 @@ export const toastZodErrorIssues = (error: ZodError) => {
   });
 };
 
-export const toastGraphQLZodError = (error: any) => {
+export const toastGraphQLZodError = <T>(error: T) => {
   if (error instanceof ApolloError) {
     error.graphQLErrors.forEach((err) => {
       if (typeof err.extensions?.exception === "object" && "issues" in err.extensions.exception!) {
