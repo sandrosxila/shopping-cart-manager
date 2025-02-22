@@ -1,5 +1,6 @@
 import Link from "next/link";
 import React from "react";
+import { ActiveLink } from "./active-link";
 
 export const Navbar = () => {
   return (
@@ -8,22 +9,20 @@ export const Navbar = () => {
         <div className="container flex h-14 items-center">
           <div className="mr-4 flex">
             <Link className="mr-4 flex items-center gap-2 lg:mr-6" href="/">
-              <span className="p-4 font-bold lg:inline-block">
-                Take Home
-              </span>
+              <span className="p-4 font-bold lg:inline-block">Take Home</span>
             </Link>
             <nav className="flex items-center gap-4 text-sm xl:gap-6">
               <Link
                 className="transition-colors hover:text-foreground/80 text-foreground/80"
                 href="/"
               >
-                Products
+                <ActiveLink href="/">Products</ActiveLink>
               </Link>
               <Link
                 className="transition-colors hover:text-foreground/80 text-foreground/80"
                 href="/cart"
               >
-                Cart
+                <ActiveLink href="/cart">Cart</ActiveLink>
               </Link>
             </nav>
           </div>

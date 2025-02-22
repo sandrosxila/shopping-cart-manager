@@ -1,6 +1,6 @@
 "use client";
 
-import React from "react";
+import React, { useEffect } from "react";
 import {
   Card,
   CardContent,
@@ -86,6 +86,10 @@ export const CartItemCard = ({ item }: CartItemCardProps) => {
 
     setQuantity(value);
   };
+
+  useEffect(() => {
+    setQuantity(q => Math.min(q, item.product.availableQuantity));
+  }, [item.product.availableQuantity]);
 
   return (
     <Card>
