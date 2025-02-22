@@ -1,32 +1,25 @@
 "use client";
 
 import React from "react";
-import {
-  CartItemUpdateSubscriptionDocument,
-  GetCartItemsQuery,
-} from "@/generated/graphql";
-import { useSubscription } from "@apollo/client";
+import { Exact, GetCartItemsQuery } from "@/generated/graphql";
 import { CartItemCard } from "@/components/cart-item-card";
+import { TransportedQueryRef } from "@apollo/experimental-nextjs-app-support";
+import { useReadQuery } from "@apollo/client";
 
 type CartItemsProps = {
-  items: GetCartItemsQuery["getCart"]["items"];
+  queryRef: TransportedQueryRef<
+    NoInfer<GetCartItemsQuery>,
+    NoInfer<
+      Exact<{
+        [key: string]: never;
+      }>
+    >
+  >;
 };
 
-export const CartItems = ({ items }: CartItemsProps) => {
-  const { data, loading } = useSubscription(
-    CartItemUpdateSubscriptionDocument,
-    {
-      onData(options) {
-        console.log(options);
-      },
-      onError(error) {
-        console.log(error);
-      },
-      fetchPolicy: 'no-cache'
-    }
-  );
-
-  console.log(data, loading)
+export const CartItems = ({ queryRef }: CartItemsProps) => {
+  const { data } = useReadQuery(queryRef);
+  const items = data.getCart?.items || [];
 
   return (
     <>

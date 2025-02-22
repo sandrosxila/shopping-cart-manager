@@ -33,7 +33,10 @@ function makeClient() {
       return {
         authToken: token
       }
-    }
+    },
+    disablePong: false,
+    retryAttempts: 3,
+    keepAlive: 5000,
   }));
   
   // The split function takes three parameters:

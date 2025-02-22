@@ -1,42 +1,87 @@
 "use client";
 
-import React, { useEffect } from 'react'
-import {Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle} from '@/components/ui/card';
-import { CartItemUpdateSubscriptionDocument, GetCartItemsQuery, RemoveCartItemDocument, UpdateItemQuantityDocument } from '@/generated/graphql';
-import { Button } from './ui/button';
-import {useMutation, useSubscription} from '@apollo/client';
-import { Input } from './ui/input';
-import {useState} from 'react';
+import React from "react";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardFooter,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
+import {
+  GetCartItemsDocument,
+  GetCartItemsQuery,
+  RemoveCartItemDocument,
+  UpdateItemQuantityDocument,
+} from "@/generated/graphql";
+import { Button } from "./ui/button";
+import { useMutation } from "@apollo/client";
+import { Input } from "./ui/input";
+import { useState } from "react";
+import { cartRemoveItemSchema, cartUpdateItemQuantitySchema } from "@/lib/schema";
+import { toastZodErrorIssues, toastGraphQLZodError } from "@/helpers/error";
+import toast from "react-hot-toast";
 
 export type CartItemCardProps = {
-  item: GetCartItemsQuery["getCart"]["items"][number]
-}
+  item: GetCartItemsQuery["getCart"]["items"][number];
+};
 
-export const CartItemCard = ({ item } : CartItemCardProps) => {
+export const CartItemCard = ({ item }: CartItemCardProps) => {
   const [quantity, setQuantity] = useState(item.quantity);
   const [removeCartItem] = useMutation(RemoveCartItemDocument);
   const [updateCartItemQuantity] = useMutation(UpdateItemQuantityDocument);
 
-  const onRemoveClick = () => {
-    removeCartItem({
-      variables: { input: { cartItemId: item._id } },
-    });
+  const onRemoveClick = async () => {
+    const input = { cartItemId: item._id };
+
+    const validatedInput = cartRemoveItemSchema.safeParse(input);
+
+    if (!validatedInput.success) {
+      toastZodErrorIssues(validatedInput.error);
+      return;
+    }
+
+    try {
+      await removeCartItem({
+        variables: { input },
+        refetchQueries: [GetCartItemsDocument],
+      });
+    } catch (error) {
+      toastGraphQLZodError(error);
+    }
   };
 
-  const onQuantityUpdateClick = () => {
-    updateCartItemQuantity({
-      variables: { input: { cartItemId: item._id, quantity } },
-    });
-  }
+  const onQuantityUpdateClick = async () => {
+    const input = { cartItemId: item._id, quantity } ;
+
+    const validatedInput = cartUpdateItemQuantitySchema.safeParse(input);
+
+    if (!validatedInput.success) {
+      toastZodErrorIssues(validatedInput.error);
+      return;
+    }
+
+    try {
+      await updateCartItemQuantity({
+        variables: { input },
+        refetchQueries: [GetCartItemsDocument],
+      });
+
+      toast.success("Cart Item Quantity updated successfully!");
+    } catch (error) {
+      toastGraphQLZodError(error);
+    }
+  };
 
   const onQuantityChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const value = Number(e.target.value);
 
     setQuantity(value);
-  }
+  };
 
   return (
-    <Card >
+    <Card>
       <CardHeader>
         <CardTitle>{item.product.title}</CardTitle>
         <CardDescription>${item.product.cost}</CardDescription>
@@ -45,19 +90,35 @@ export const CartItemCard = ({ item } : CartItemCardProps) => {
         <div className="space-y-1">
           <div className="flex gap-3 items-center">
             Quantity:
-            <Input type="number" max={item.product.availableQuantity} min={0} value={quantity} onChange={onQuantityChange}/>
+            <Input
+              type="number"
+              max={item.product.availableQuantity}
+              min={0}
+              value={quantity}
+              onChange={onQuantityChange}
+            />
           </div>
           <p className="text-sm text-muted-foreground">
             {item.product.availableQuantity}
           </p>
         </div>
       </CardContent>
-      <CardFooter className="flex justify-between gap-4">
-        <Button variant="destructive" onClick={onRemoveClick}>Remove</Button>
-        <Button variant="default" onClick={onQuantityUpdateClick}>
+      <CardFooter className="flex flex-col gap-2">
+        <Button
+          variant="default"
+          className="w-full"
+          onClick={onQuantityUpdateClick}
+        >
           Update Quantity
+        </Button>
+        <Button
+          variant="destructive"
+          className="w-full"
+          onClick={onRemoveClick}
+        >
+          Remove
         </Button>
       </CardFooter>
     </Card>
-  )
-}
+  );
+};

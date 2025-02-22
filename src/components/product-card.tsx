@@ -13,6 +13,9 @@ import {
 import { Input } from "@/components/ui/input";
 import { useMutation } from "@apollo/client";
 import { Button } from "./ui/button";
+import toast from "react-hot-toast";
+import { cartAddItemSchema } from "@/lib/schema";
+import { toastGraphQLZodError, toastZodErrorIssues } from "@/helpers/error";
 
 type ProductCardProps = {
   product: Omit<Product, "createdAt" | "updatedAt">;
@@ -22,17 +25,32 @@ export const ProductCard = ({ product }: ProductCardProps) => {
   const [quantity, setQuantity] = useState(0);
   const [addItemToCart] = useMutation(AddItemToCartDocument);
 
-  const onAddItemToCartAddClick = () => {
-    addItemToCart({
-      variables: { input: { productId: product._id, quantity } },
-    });
+  const onAddItemToCartAddClick = async () => {
+    const input = { productId: product._id, quantity };
+
+    const validatedInput = cartAddItemSchema.safeParse(input);
+
+    if (!validatedInput.success) {
+      toastZodErrorIssues(validatedInput.error);
+      return;
+    }
+
+    try {
+      await addItemToCart({
+        variables: { input },
+      });
+
+      toast.success("The product added successfully to the cart!");
+    } catch (error) {
+      toastGraphQLZodError(error);
+    }
   };
 
   const onQuantityChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const value = Number(e.target.value);
 
     setQuantity(value);
-  }
+  };
 
   return (
     <Card>
@@ -44,7 +62,13 @@ export const ProductCard = ({ product }: ProductCardProps) => {
         <div className="space-y-2">
           <div className="flex gap-3 items-center">
             Quantity:
-            <Input type="number" max={product.availableQuantity} min={0} value={quantity} onChange={onQuantityChange}/>
+            <Input
+              type="number"
+              max={product.availableQuantity}
+              min={0}
+              value={quantity}
+              onChange={onQuantityChange}
+            />
           </div>
           <p className="text-sm font-medium leading-none">
             Available: {product.availableQuantity}
@@ -54,9 +78,12 @@ export const ProductCard = ({ product }: ProductCardProps) => {
           </p>
         </div>
       </CardContent>
-      <CardFooter className="flex justify-between">
-        <Button variant="destructive">Cancel</Button>
-        <Button variant="default" onClick={onAddItemToCartAddClick}>
+      <CardFooter>
+        <Button
+          variant="default"
+          onClick={onAddItemToCartAddClick}
+          className="w-full"
+        >
           Add To cart
         </Button>
       </CardFooter>
