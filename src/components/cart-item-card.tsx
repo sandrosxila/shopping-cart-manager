@@ -100,8 +100,9 @@ export const CartItemCard = ({ item }: CartItemCardProps) => {
       <CardContent>
         <div className="space-y-1">
           <div className="flex gap-3 items-center">
-            Quantity:
+            <label htmlFor={`cart-item-input-${item._id}`}>Quantity:</label>
             <Input
+              id={`cart-item-input-${item._id}`}
               type="number"
               max={item.product.availableQuantity}
               min={0}

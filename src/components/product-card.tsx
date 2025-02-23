@@ -61,8 +61,11 @@ export const ProductCard = ({ product }: ProductCardProps) => {
       <CardContent>
         <div className="space-y-2">
           <div className="flex gap-3 items-center">
-            Quantity:
+            <label htmlFor={`product-input-${product._id}`}>
+              Quantity:
+            </label>
             <Input
+              id={`product-input-${product._id}`}
               type="number"
               max={product.availableQuantity}
               min={0}
@@ -84,7 +87,7 @@ export const ProductCard = ({ product }: ProductCardProps) => {
           onClick={onAddItemToCartAddClick}
           className="w-full"
         >
-          Add To cart
+          Add To Cart
         </Button>
       </CardFooter>
     </Card>
