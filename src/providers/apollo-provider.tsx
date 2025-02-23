@@ -14,12 +14,12 @@ import { getMainDefinition } from "@apollo/client/utilities";
 // have a function to create a client for you
 function makeClient() {
   const httpLink = new HttpLink({
-    uri: "https://take-home-be.onrender.com/api",
+    uri: process.env.NEXT_PUBLIC_GRAPHQL_API_URL,
     fetchOptions: { cache: "no-store" },
   });
   
   const wsLink = new GraphQLWsLink(createClient({
-    url: 'wss://take-home-be.onrender.com/api',
+    url: process.env.NEXT_PUBLIC_GRAPHQL_API_URL_WSS!,
     connectionParams: () => {
       const token = Cookies.get('authToken');
 

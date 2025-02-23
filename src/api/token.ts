@@ -8,7 +8,7 @@ mutation {
 }`;
 
 export const getToken = async () => {
-  const response = await fetch("https://take-home-be.onrender.com/api", {
+  const response = await fetch(process.env.NEXT_PUBLIC_GRAPHQL_API_URL!, {
     method: "POST",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify({

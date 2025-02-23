@@ -2,6 +2,8 @@ import { PreloadQuery } from "@/apollo-client";
 import { GetProductsDocument } from "@/generated/graphql";
 import { Products } from "@/components/products";
 
+export const dynamic = 'force-dynamic';
+
 export default async function Home() {
   return (
     <div className="container flex grow justify-center w-full self-center">
