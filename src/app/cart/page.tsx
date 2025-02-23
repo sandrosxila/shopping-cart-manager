@@ -6,12 +6,10 @@ export const dynamic = "force-dynamic";
 
 export default async function Cart() {
   return (
-    <div className="container flex self-center justify-center">
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+    <div className="container flex self-center items-center flex-col gap-2">  
         <PreloadQuery query={GetCartItemsDocument}>
           <CartItems />
         </PreloadQuery>
-      </div>
     </div>
   );
 }

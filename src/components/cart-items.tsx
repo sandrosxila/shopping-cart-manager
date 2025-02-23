@@ -19,17 +19,26 @@ import {
   DialogTitle,
 } from "./ui/dialog";
 import { Button } from "./ui/button";
+import { useRouter } from "next/navigation";
+
+const DEBOUNCE_TIMEOUT = 500;
+const TOAST_DURATION = 2000;
 
 export const CartItems = () => {
   const { data, refetch } = useSuspenseQuery(GetCartItemsDocument);
   const [isModalOpen, setIsModalOpen] = useState(false);
+
+  const router = useRouter();
 
   const [itemsChanged, setItemsChanged] = useState<
     { title: string; availableQuantity: number }[]
   >([]);
   const [itemsRemoved, setItemsRemoved] = useState<string[]>([]);
 
-  const debouncedOpen = useDebouncedCallback(() => setIsModalOpen(true), 500);
+  const debouncedOpen = useDebouncedCallback(
+    () => setIsModalOpen(true),
+    DEBOUNCE_TIMEOUT
+  );
 
   const items = data.getCart?.items ?? [];
 
@@ -43,7 +52,7 @@ export const CartItems = () => {
         if (event == CartItemEvent.ItemOutOfStock) {
           toast.error(`${title} is out of stock`, {
             icon: "ⓘ",
-            duration: 2000,
+            duration: TOAST_DURATION,
           });
 
           setItemsRemoved((prev) => [...prev, title]);
@@ -52,7 +61,7 @@ export const CartItems = () => {
             `Available Quantity of ${title} is changed. \n (Currently it's ${availableQuantity})`,
             {
               icon: "ⓘ",
-              duration: 2000,
+              duration: TOAST_DURATION,
             }
           );
 
@@ -66,10 +75,14 @@ export const CartItems = () => {
 
   const onOkClick = () => {
     setIsModalOpen(false);
-    setItemsChanged(() => []);
-    setItemsRemoved(() => []);
+    setItemsChanged([]);
+    setItemsRemoved([]);
     refetch();
   };
+
+  const onCheckoutClick = () => {
+    router.push("/checkout")
+  }
 
   return (
     <>
@@ -110,9 +123,17 @@ export const CartItems = () => {
         </DialogContent>
       </Dialog>
 
-      {items.map((item) => (
-        <CartItemCard key={item._id} item={item} />
-      ))}
+      <div className="flex justify-center">
+          <Button size="lg" className="bg-green-700 hover:bg-green-800" onClick={onCheckoutClick}>
+            Checkout
+          </Button>
+      </div>
+
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+        {items.map((item) => (
+          <CartItemCard key={item._id} item={item} />
+        ))}
+      </div>
     </>
   );
 };
