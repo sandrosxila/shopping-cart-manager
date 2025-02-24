@@ -33,6 +33,9 @@ export const CartItems = () => {
   const [itemsChanged, setItemsChanged] = useState<
     { title: string; availableQuantity: number }[]
   >([]);
+  const [itemsAffected, setItemsAffected] = useState<
+    { title: string; oldQuantity: number; newQuantity: number }[]
+  >([]);
   const [itemsRemoved, setItemsRemoved] = useState<string[]>([]);
 
   const debouncedOpen = useDebouncedCallback(
@@ -47,7 +50,9 @@ export const CartItems = () => {
       console.log(data);
       if (data.data?.cartItemUpdate) {
         const { event, payload } = data.data?.cartItemUpdate;
-        const { title, availableQuantity } = payload.product;
+        const { title } = payload.product;
+        const { quantity: newQuantity, _id } = payload;
+        const { quantity } = items.find((item) => item._id === _id)!;
 
         if (event == CartItemEvent.ItemOutOfStock) {
           toast.error(`${title} is out of stock`, {
@@ -58,14 +63,24 @@ export const CartItems = () => {
           setItemsRemoved((prev) => [...prev, title]);
         } else if (event == CartItemEvent.ItemQuantityUpdated) {
           toast.error(
-            `Available Quantity of ${title} is changed. \n (Currently it's ${availableQuantity})`,
+            `Available Quantity of ${title} is changed. \n (Currently it's ${newQuantity})`,
             {
               icon: "ⓘ",
               duration: TOAST_DURATION,
             }
           );
 
-          setItemsChanged((prev) => [...prev, { title, availableQuantity }]);
+          setItemsChanged((prev) => [
+            ...prev,
+            { title, availableQuantity: newQuantity },
+          ]);
+
+          if (newQuantity < quantity) {
+            setItemsAffected((prev) => [
+              ...prev,
+              { title, oldQuantity: quantity, newQuantity },
+            ]);
+          }
         }
 
         debouncedOpen();
@@ -77,12 +92,13 @@ export const CartItems = () => {
     setIsModalOpen(false);
     setItemsChanged([]);
     setItemsRemoved([]);
+    setItemsAffected([]);
     refetch();
   };
 
   const onCheckoutClick = () => {
-    router.push("/checkout")
-  }
+    router.push("/checkout");
+  };
 
   return (
     <>
@@ -114,6 +130,20 @@ export const CartItems = () => {
                     </ul>
                   </li>
                 )}
+                {itemsAffected.length > 0 && (
+                  <li>
+                    Items(s) affected
+                    <ul className="list-disc list-inside pl-8 font-normal text-base pt-2">
+                      {itemsAffected.map(
+                        ({ title, oldQuantity, newQuantity }, id) => (
+                          <li key={id}>
+                            {title} - was {oldQuantity}, became {newQuantity}
+                          </li>
+                        )
+                      )}
+                    </ul>
+                  </li>
+                )}
               </ul>
             </DialogDescription>
           </DialogHeader>
@@ -124,9 +154,13 @@ export const CartItems = () => {
       </Dialog>
 
       <div className="flex justify-center">
-          <Button size="lg" className="bg-green-700 hover:bg-green-800" onClick={onCheckoutClick}>
-            Checkout
-          </Button>
+        <Button
+          size="lg"
+          className="bg-green-700 hover:bg-green-800"
+          onClick={onCheckoutClick}
+        >
+          Checkout
+        </Button>
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
