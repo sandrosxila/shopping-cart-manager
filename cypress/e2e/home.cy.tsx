@@ -1,6 +1,6 @@
-const TOAST_DURATION = 2000;
-
 describe("Home Page", () => {
+  const TOAST_DURATION = 2000;
+
   beforeEach(() => {
     cy.visit("http://localhost:3000/");
   });
@@ -24,11 +24,9 @@ describe("Home Page", () => {
 
     let idx = -1;
 
-    quantityTexts
-      .each(($el, index) => {
+    quantityTexts.each(($el, index) => {
         const quantity = Number($el.text().split(" ").at(1));
         if (quantity > 0) {
-          console.log(idx);
           idx = index;
         }
       })
@@ -47,7 +45,6 @@ describe("Home Page", () => {
     const quantityTexts = cy.findAllByText(/Available/);
     
     cy.get('[data-slot="card"]').each(($el) => {
-      
       cy.wrap($el).within(() => {
         cy.findByText(/Available/).then(($el) => {
           const quantity = Number($el.text().split(" ").at(1));
