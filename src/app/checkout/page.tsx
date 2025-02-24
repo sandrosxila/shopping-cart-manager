@@ -8,15 +8,15 @@ export default async function CheckoutPage() {
 
   const items = data.getCart.items;
 
-  const totalPrice = items.reduce((acc, item) => acc + item.product.cost, 0);
   const totalQuantity = items.reduce((acc, item) => acc + item.quantity, 0);
-
+  const totalPrice = items.reduce((acc, item) => acc + item.product.cost * item.quantity, 0);
+  
   return (
     <div className="container flex self-center flex-col items-center">
       <h2 className="text-bold text-3xl pb-8 pt-4">Summary</h2>
       <div className="flex gap-8 text-semibold text-xl pb-8">
         <span>Total Price: <b>${totalPrice.toFixed(2)}</b></span>
-        <span>Total Number of items: <b>${totalQuantity}</b></span>
+        <span>Total Number of items: <b>{totalQuantity}</b></span>
       </div>
       <table className="w-full table-auto border-collapse text-sm">
         <thead>
